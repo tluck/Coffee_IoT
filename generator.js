@@ -6,6 +6,7 @@ const MongoClient = require('mongodb').MongoClient;
 const fs = require('fs');
 
 var d = new Date('2020-01-01 00:00:00');
+var eventNumber = 1;
 main().catch(console.error);
 
 async function main() {
@@ -21,7 +22,7 @@ async function main() {
     let template = JSON.parse(rawTemplate);
     //console.log(template);
 
-    const ndays = 1
+    const ndays = 365
     const devices = 3
     var deviceId;
     var days
@@ -40,12 +41,13 @@ async function insertEventsInBulk(deviceId, client, template) {
     const events = 24*240 // 240 events = 1 hour => 3600s / every 15 seconds)
     const coll = client.db("Veritas").collection("ts_events");
     const bulk = coll.initializeUnorderedBulkOp();
+    const numMetrics = 10;
 
     var eventId;
     var metricId;
 
     for ( eventId = 1; eventId <= events; eventId++ ) {
-        for ( metricId = 1; metricId <=10; metricId++ ) {
+        for ( metricId = 1; metricId <= numMetrics; metricId++ ) {
 
             // Overwrite with specific values
             // ==============================
@@ -68,9 +70,12 @@ async function insertEventsInBulk(deviceId, client, template) {
             // Insert
             bulk.insert(event);
 
-            console.log("event: " + event.ts + ". EVENT_ID: " + eventId);
+            
         }
+        console.log(`event: ${d}. EVENT_ID: ${eventId} Total: ${eventNumber}`);
+        eventNumber++;
         d = new Date(d.getTime() + 15000);
+
     }       
     await bulk.execute();
     //}
