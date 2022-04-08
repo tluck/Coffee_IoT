@@ -22,19 +22,19 @@ async function main() {
     let template = JSON.parse(rawTemplate);
     //console.log(template);
 
-    const ndays = 1
+    const ndays = 3
     const devices = 3
     var deviceId;
-    var days;
+    var day;
 
     const coll = client.db("Veritas").collection("ts_events");
     const filter = {};
     const result = await coll.deleteMany(filter);
     console.log("Deleted " + result.deletedCount + " documents");
 
-    for ( days = 1; days <= ndays; days++) {
+    for ( day = 1; day <= ndays; day++) {
         for ( deviceId = 1; deviceId <= devices; deviceId++ ) {
-            console.log(`Ingesting DeviceId: ${deviceId}`);
+            console.log(`On day ${day} of ${ndays}, ingesting DeviceId: ${deviceId}`);
             await insertEventsInBulk(deviceId, client, template)
                     .catch(console.error);
         }
@@ -79,10 +79,9 @@ async function insertEventsInBulk(deviceId, client, template) {
             
         }
         eventNumber = eventNumber + numMetrics;
-        console.log(`event: ${d}. EVENT_ID: ${eventId} Total: ${eventNumber}`);
         d = new Date(d.getTime() + 15000);
-
-    }       
+    }
+    console.log(`Date: ${d} Events: ${eventNumber}`);       
     await bulk.execute();
     //}
 }
