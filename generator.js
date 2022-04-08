@@ -6,7 +6,7 @@ const MongoClient = require('mongodb').MongoClient;
 const fs = require('fs');
 
 var d = new Date('2020-01-01 00:00:00');
-var eventNumber = 1;
+var eventNumber = 0;
 main().catch(console.error);
 
 async function main() {
@@ -22,13 +22,19 @@ async function main() {
     let template = JSON.parse(rawTemplate);
     //console.log(template);
 
-    const ndays = 365
+    const ndays = 1
     const devices = 3
     var deviceId;
-    var days
+    var days;
+
+    const coll = client.db("Veritas").collection("ts_events");
+    const filter = {};
+    const result = await coll.deleteMany(filter);
+    console.log("Deleted " + result.deletedCount + " documents");
 
     for ( days = 1; days <= ndays; days++) {
         for ( deviceId = 1; deviceId <= devices; deviceId++ ) {
+            console.log(`Ingesting DeviceId: ${deviceId}`);
             await insertEventsInBulk(deviceId, client, template)
                     .catch(console.error);
         }
@@ -72,8 +78,8 @@ async function insertEventsInBulk(deviceId, client, template) {
 
             
         }
+        eventNumber = eventNumber + numMetrics;
         console.log(`event: ${d}. EVENT_ID: ${eventId} Total: ${eventNumber}`);
-        eventNumber++;
         d = new Date(d.getTime() + 15000);
 
     }       
