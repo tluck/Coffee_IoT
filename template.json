@@ -4,9 +4,11 @@
     "appliance_id": "ABC000001"
   },
   "metric_name": "meteric2",
-  "value_upper": { "$number": { "min": 500, "max": 118200000}},
-  "param4": 1,
   "value": { "$number": { "min": 500, "max": 500000}},
   "value_lower": { "$number": { "min": 500, "max": 500000}},
-  "param1": 465800000
+  "value_upper": { "$number": { "min": 500, "max": 118200000}},
+  "param1": { "$number": { "min": 500000, "max": 465800000}},
+  "param2": { "$number": { "min": 500, "max": 2000}},
+  "param3": { "$number": { "min": 200, "max": 600}},
+  "param4": { "$number": { "min": 1, "max": 10}}
 }
