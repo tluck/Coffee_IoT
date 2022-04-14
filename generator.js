@@ -7,7 +7,7 @@ const fs = require('fs');
 
 // variables
 var d = new Date('2020-01-01 00:00:00');
-const numDays = 3
+const numDays = 90
 const numDevices = 3
 const numMetrics = 10
 const numEvents = 24*3600/15 // daily events = 24 hours a day every 15 seconds
@@ -57,7 +57,7 @@ async function main() {
   
 async function insertEventsInBulk(template) {
 
-    const bulk = coll.initializeUnorderedBulkOp();
+    const bulk = coll.initializeOrderedBulkOp();
 
     var eventId;
     var deviceId;
